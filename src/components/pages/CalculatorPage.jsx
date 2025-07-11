@@ -1,25 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { motion } from "framer-motion";
 import InputPanel from "@/components/organisms/InputPanel";
-import ResultsPanel from "@/components/organisms/ResultsPanel";
 import ReferencePanel from "@/components/organisms/ReferencePanel";
+import ResultsPanel from "@/components/organisms/ResultsPanel";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
 import FormulaSelector from "@/components/molecules/FormulaSelector";
 import { qtcService } from "@/services/api/qtcService";
-import Loading from "@/components/ui/Loading";
-import Error from "@/components/ui/Error";
 
 const CalculatorPage = () => {
   const [qtInterval, setQtInterval] = useState(0);
   const [heartRate, setHeartRate] = useState(0);
   const [boxCount, setBoxCount] = useState(0);
-  const [inputMethod, setInputMethod] = useState("direct");
+  const [rrInterval, setRrInterval] = useState(0);
   const [selectedFormula, setSelectedFormula] = useState("Bazett");
   const [qtcValue, setQtcValue] = useState(0);
-  const [formulas, setFormulas] = useState([]);
-  const [ranges, setRanges] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [inputMethod, setInputMethod] = useState("manual");
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [formulas, setFormulas] = useState([]);
+  const [ranges, setRanges] = useState({});
 
   useEffect(() => {
     loadInitialData();
@@ -41,19 +42,19 @@ const CalculatorPage = () => {
         qtcService.getReferenceRanges()
       ]);
       
-      setFormulas(formulasData);
-      setRanges(rangesData);
+      setFormulas(formulasData || []);
+      setRanges(rangesData || {});
     } catch (err) {
+      console.error("Error loading initial data:", err);
       setError("Failed to load calculator data");
-      toast.error("Failed to load calculator data");
     } finally {
       setLoading(false);
     }
   };
 
-  const calculateQTc = () => {
+  const calculateQTc = async () => {
     try {
-      if (qtInterval <= 0 || heartRate <= 0) {
+      if (!qtInterval || !heartRate) {
         setQtcValue(0);
         return;
       }
@@ -77,15 +78,17 @@ const CalculatorPage = () => {
 
       setQtcValue(qtc);
     } catch (err) {
+      console.error("Error calculating QTc:", err);
       toast.error("Error calculating QTc");
       setQtcValue(0);
     }
   };
 
-  const handleClear = () => {
+const handleClear = () => {
     setQtInterval(0);
     setHeartRate(0);
     setBoxCount(0);
+    setRrInterval(0);
     setQtcValue(0);
     toast.info("Calculator cleared");
   };

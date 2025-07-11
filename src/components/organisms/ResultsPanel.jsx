@@ -1,11 +1,11 @@
 import React from "react";
 import { motion } from "framer-motion";
-import Card from "@/components/atoms/Card";
-import Badge from "@/components/atoms/Badge";
-import RangeIndicator from "@/components/molecules/RangeIndicator";
 import ApperIcon from "@/components/ApperIcon";
+import Badge from "@/components/atoms/Badge";
+import Card from "@/components/atoms/Card";
+import RangeIndicator from "@/components/molecules/RangeIndicator";
 
-const ResultsPanel = ({ qtcValue, formula, qtInterval, heartRate, ranges }) => {
+const ResultsPanel = ({ qtcValue, formula, qtInterval, heartRate, ranges, inputMethod }) => {
   const hasValidInputs = qtInterval > 0 && heartRate > 0;
 
   if (!hasValidInputs) {
@@ -121,11 +121,11 @@ const ResultsPanel = ({ qtcValue, formula, qtInterval, heartRate, ranges }) => {
           </div>
         </div>
 
-        <div className="mt-4 text-xs text-medical-500 bg-medical-50 rounded-lg p-3">
+<div className="mt-4 text-xs text-medical-500 bg-medical-50 rounded-lg p-3">
           <div className="flex items-center space-x-2">
             <ApperIcon name="Info" className="w-4 h-4" />
             <span>
-              RR Interval: {rrInterval.toFixed(0)} ms | Formula: {formula} | 
+              RR Interval: {rrInterval.toFixed(0)} ms {inputMethod === "rrInterval" ? "(input)" : "(calculated)"} | Formula: {formula} | 
               {formula === "Bazett" && " QTc = QT / √(RR/1000)"}
               {formula === "Fridericia" && " QTc = QT / (RR/1000)^(1/3)"}
               {formula === "Framingham" && " QTc = QT + 0.154 × (1000 - RR)"}

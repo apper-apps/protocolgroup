@@ -45,6 +45,25 @@ export const qtcService = {
       rrInterval: Math.round(rrInterval),
       formula,
       timestamp: new Date().toISOString()
+};
+  },
+
+  async calculateFromRRInterval(rrInterval, qtInterval, formula = "Bazett") {
+    await delay(100);
+    
+    if (rrInterval <= 0 || qtInterval <= 0) {
+      throw new Error("Invalid input values");
+    }
+
+    const heartRate = Math.round(60000 / rrInterval);
+    
+    // Use existing calculateQTc method
+    const result = await this.calculateQTc(qtInterval, heartRate, formula);
+    
+    return {
+      ...result,
+      rrInterval: Math.round(rrInterval),
+      inputMethod: "rrInterval"
     };
   }
 };

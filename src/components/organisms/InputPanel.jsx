@@ -13,6 +13,8 @@ const InputPanel = ({
   setHeartRate, 
   boxCount, 
   setBoxCount,
+  rrInterval,
+  setRrInterval,
   inputMethod,
   setInputMethod,
   onClear 
@@ -44,6 +46,13 @@ const InputPanel = ({
           delete newErrors.boxCount;
         }
         break;
+case "rrInterval":
+        if (value < 600 || value > 2000) {
+          newErrors.rrInterval = "RR interval should be between 600-2000 ms";
+        } else {
+          delete newErrors.rrInterval;
+        }
+        break;
       default:
         break;
     }
@@ -70,6 +79,17 @@ const InputPanel = ({
     // Auto-calculate QT interval from boxes
     const qtFromBoxes = value * 40; // 0.04 seconds per box = 40ms
     setQtInterval(qtFromBoxes);
+};
+
+  const handleRrIntervalChange = (e) => {
+    const value = parseFloat(e.target.value) || 0;
+    setRrInterval(value);
+    validateInput("rrInterval", value);
+    // Auto-calculate heart rate from RR interval
+    if (value > 0) {
+      const calculatedHeartRate = Math.round(60000 / value);
+      setHeartRate(calculatedHeartRate);
+    }
   };
 
   return (
@@ -96,7 +116,7 @@ const InputPanel = ({
           </Button>
         </div>
 
-        <div className="flex space-x-2 mb-6">
+<div className="flex space-x-2 mb-6">
           <TabButton
             active={inputMethod === "direct"}
             onClick={() => setInputMethod("direct")}
@@ -108,6 +128,12 @@ const InputPanel = ({
             onClick={() => setInputMethod("boxes")}
           >
             Box Counting
+          </TabButton>
+          <TabButton
+            active={inputMethod === "rrInterval"}
+            onClick={() => setInputMethod("rrInterval")}
+          >
+            RR Interval
           </TabButton>
         </div>
 
@@ -155,7 +181,7 @@ const InputPanel = ({
               </div>
             </div>
           </motion.div>
-        ) : (
+) : inputMethod === "boxes" ? (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -205,6 +231,61 @@ const InputPanel = ({
                   <p className="text-sm text-primary-800">
                     Count the number of small boxes in the QT interval. Each small box represents 0.04 seconds (40ms). 
                     This method is useful when measuring directly from ECG paper.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-4"
+          >
+            <FormField
+              label="RR Interval"
+              type="number"
+              value={rrInterval || ""}
+              onChange={handleRrIntervalChange}
+              placeholder="Enter RR interval (ms)"
+              error={errors.rrInterval}
+              step="1"
+              min="600"
+              max="2000"
+            />
+            
+            <FormField
+              label="QT Interval"
+              type="number"
+              value={qtInterval || ""}
+              onChange={handleQtChange}
+              placeholder="Enter QT interval (ms)"
+              error={errors.qtInterval}
+              step="1"
+              min="200"
+              max="600"
+            />
+            
+            {rrInterval > 0 && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                <div className="flex items-center space-x-2">
+                  <ApperIcon name="Calculator" className="w-4 h-4 text-green-600" />
+                  <span className="text-sm text-green-800">
+                    Heart Rate: <strong>{Math.round(60000 / rrInterval)} bpm</strong> (calculated from RR interval)
+                  </span>
+                </div>
+              </div>
+            )}
+            
+            <div className="bg-primary-50 border border-primary-200 rounded-lg p-4">
+              <div className="flex items-start space-x-3">
+                <ApperIcon name="Info" className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
+                <div>
+                  <h4 className="font-medium text-primary-900 mb-1">RR Interval Method</h4>
+                  <p className="text-sm text-primary-800">
+                    Enter the RR interval in milliseconds to automatically calculate the heart rate. 
+                    The heart rate is calculated as 60,000 ÷ RR interval (ms).
                   </p>
                 </div>
               </div>

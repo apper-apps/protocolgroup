@@ -5,6 +5,7 @@ export const useQTcCalculator = () => {
   const [qtInterval, setQtInterval] = useState(0);
   const [heartRate, setHeartRate] = useState(0);
   const [boxCount, setBoxCount] = useState(0);
+  const [rrInterval, setRrInterval] = useState(0);
   const [selectedFormula, setSelectedFormula] = useState("Bazett");
   const [qtcValue, setQtcValue] = useState(0);
   const [inputMethod, setInputMethod] = useState("direct");
@@ -31,10 +32,11 @@ export const useQTcCalculator = () => {
     }
   };
 
-  const clearCalculator = () => {
+const clearCalculator = () => {
     setQtInterval(0);
     setHeartRate(0);
     setBoxCount(0);
+    setRrInterval(0);
     setQtcValue(0);
     setError("");
   };
@@ -45,13 +47,15 @@ export const useQTcCalculator = () => {
     }
   }, [qtInterval, heartRate, selectedFormula]);
 
-  return {
+return {
     qtInterval,
     setQtInterval,
     heartRate,
     setHeartRate,
     boxCount,
     setBoxCount,
+    rrInterval,
+    setRrInterval,
     selectedFormula,
     setSelectedFormula,
     qtcValue,
