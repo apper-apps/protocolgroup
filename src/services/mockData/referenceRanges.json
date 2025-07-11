@@ -1,0 +1,16 @@
+[
+  {
+    "Id": 1,
+    "gender": "male",
+    "normalMax": 440,
+    "borderlineMax": 460,
+    "description": "Normal QTc values for adult males"
+  },
+  {
+    "Id": 2,
+    "gender": "female",
+    "normalMax": 460,
+    "borderlineMax": 480,
+    "description": "Normal QTc values for adult females"
+  }
+]

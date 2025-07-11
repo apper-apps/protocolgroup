@@ -1,0 +1,23 @@
+[
+  {
+    "Id": 1,
+    "name": "Bazett",
+    "equation": "QTc = QT / √(RR/1000)",
+    "description": "Most commonly used formula. May over-correct at high heart rates.",
+    "isDefault": true
+  },
+  {
+    "Id": 2,
+    "name": "Fridericia",
+    "equation": "QTc = QT / (RR/1000)^(1/3)",
+    "description": "Better accuracy at extreme heart rates. Less rate-dependent than Bazett.",
+    "isDefault": false
+  },
+  {
+    "Id": 3,
+    "name": "Framingham",
+    "equation": "QTc = QT + 0.154 × (1000 - RR)",
+    "description": "Linear correction based on Framingham Heart Study population data.",
+    "isDefault": false
+  }
+]
